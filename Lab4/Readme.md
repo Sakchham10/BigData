@@ -1,63 +1,130 @@
-# Lab 4: Credit Card Fraud Detection using Autoencoder
+Regression Analysis on the Diabetes Dataset
+Project Overview
+This project demonstrates various regression techniques to predict diabetes disease progression using the Diabetes dataset from sklearn.datasets. It covers the entire workflow from data preparation to model implementation, evaluation, and comparison. The primary goal is to explore how different regression models perform on the same dataset and to understand the impact of techniques like polynomial feature expansion and regularization.
 
-This project demonstrates the use of an AutoEncoder neural network for anomaly detection, specifically for identifying fraudulent credit card transactions. The model is built using the `pyod` library.
+Dataset
+The project utilizes the Diabetes dataset, which is included in the scikit-learn library.
 
-## Dataset
+Source: sklearn.datasets.load_diabetes
 
-The model is trained on the [Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) dataset from Kaggle. You need to download the `creditcard.csv` file and place it in the `Lab4/lab4_env/` directory alongside the `Lab4.ipynb` notebook.
+Features: Ten baseline variables (age, sex, body mass index, average blood pressure, and six blood serum measurements) for 442 diabetes patients.
 
-## Setup and Installation
+Target: A quantitative measure of disease progression one year after the baseline.
 
-A Python virtual environment is included in `lab4_env`. If you want to set up your own environment, you need to install the following libraries:
+Prerequisites
+To run the code, you need Python and the following libraries installed:
 
-```bash
-pip install pandas scikit-learn pyod jupyter
-```
+numpy
 
-The notebook was run with Python 3.9.
+pandas
 
-## Running the code
+matplotlib
 
-1.  Make sure `creditcard.csv` is in the `Lab4/lab4_env/` directory.
-2.  Activate the virtual environment or make sure you have the required packages installed.
-3.  Run the Jupyter Notebook:
-    ```bash
-    jupyter notebook Lab4/lab4_env/Lab4.ipynb
-    ```
+scikit-learn
 
-## Model and Implementation
+You can install them using pip:
 
-The core of this project is an `AutoEncoder` model from the `pyod` library.
+pip install numpy pandas matplotlib scikit-learn
 
-1.  **Data Loading and Preprocessing**: The `creditcard.csv` dataset is loaded. The `Time` and `Amount` columns are scaled using `StandardScaler`.
-2.  **Data Splitting**: The data is split into training and testing sets. The training set consists only of normal transactions. The test set contains a mix of normal transactions (not seen during training) and all fraudulent transactions.
-3.  **Model Training**: An `AutoEncoder` is trained on the normal transactions. The autoencoder learns to reconstruct normal data, so it will have a higher reconstruction error for fraudulent transactions.
-4.  **Evaluation**: The model is evaluated on the test set.
+Project Workflow
+The analysis is structured into five main steps:
 
-## Results
+Data Preparation: Load and inspect the dataset. Since the sklearn dataset is pre-cleaned, no significant cleaning is required.
 
-The model's performance on the test set is as follows:
+Simple Linear Regression: Build a model using a single feature (bmi) to establish a baseline.
 
--   **ROC-AUC Score**: 0.9590
+Multiple Regression: Extend the model to use all available features to improve prediction accuracy.
 
--   **Confusion Matrix**:
-    ```
-    [[56759   104]
-     [  108   384]]
-    ```
-    - True Negatives (Normal, correctly identified): 56759
-    - False Positives (Normal, incorrectly identified as Fraud): 104
-    - False Negatives (Fraud, incorrectly identified as Normal): 108
-    - True Positives (Fraud, correctly identified): 384
+Polynomial Regression: Introduce polynomial features to capture non-linear relationships in the data and analyze the trade-off between model complexity, underfitting, and overfitting.
 
--   **Classification Report**:
-    | | precision | recall | f1-score | support |
-    | :--- | :--- | :--- | :--- | :--- |
-    | **Normal** | 1.00 | 1.00 | 1.00 | 56863 |
-    | **Fraud** | 0.79 | 0.78 | 0.78 | 492 |
-    | | | | | |
-    | **accuracy** | | | 1.00 | 57355 |
-    | **macro avg** | 0.89 | 0.89 | 0.89 | 57355 |
-    | **weighted avg** | 1.00 | 1.00 | 1.00 | 57355 |
+Regularization: Implement Ridge (L2) and Lasso (L1) regression to handle potential overfitting and multicollinearity by penalizing large coefficient values.
 
-The model achieves high accuracy, but more importantly a good F1-score for the minority class (Fraud), indicating it is effective at detecting fraudulent transactions. 
+Evaluation Metrics
+The performance of each model is evaluated using the following standard regression metrics:
+
+Mean Absolute Error (MAE): The average of the absolute differences between predicted and actual values.
+
+Mean Squared Error (MSE): The average of the squared differences between predicted and actual values.
+
+Root Mean Squared Error (RMSE): The square root of MSE, providing an error metric in the same units as the target variable.
+
+R-squared (R²): The proportion of the variance in the dependent variable that is predictable from the independent variable(s).
+
+Model Performance Summary
+The following table compares the performance of all implemented models on the test set.
+
+Model
+
+MAE
+
+MSE
+
+RMSE
+
+R²
+
+Simple Linear Regression
+
+49.78
+
+3444.69
+
+58.69
+
+0.35
+
+Multiple Linear Regression
+
+42.79
+
+2900.19
+
+53.85
+
+0.45
+
+Polynomial Regression (Deg 2)
+
+43.58
+
+3065.53
+
+55.37
+
+0.42
+
+Ridge Regression (alpha=1.0)
+
+44.97
+
+3051.35
+
+55.24
+
+0.42
+
+Lasso Regression (alpha=0.1)
+
+43.15
+
+2948.52
+
+54.30
+
+0.44
+
+Note: Results are based on a random_state of 42 for the train-test split and may vary slightly with different states or parameters.
+
+How to Run
+Save the Python code as a .py file (e.g., regression_analysis.py) and run it from your terminal:
+
+python regression_analysis.py
+
+The script will print the evaluation metrics for each model to the console and display a series of matplotlib plots visualizing the results.
+
+Key Takeaways
+Multiple Regression provides a significant improvement over Simple Linear Regression by leveraging all available features.
+
+Polynomial Regression with a degree of 2 did not improve upon the multiple linear model for this dataset and showed signs of overfitting as the degree increased.
+
+Ridge and Lasso Regression provide regularization to prevent overfitting. Their performance is comparable to the Multiple Linear Regression model, with Lasso offering the added benefit of potentially simplifying the model by shrinking some feature coefficients to zero.
